@@ -173,7 +173,7 @@ if __name__ == '__main__':
     # folds
     k_folds = 10
     # path to folder that contains flows .csv
-    csv_path = "/Users/emanuele/Desktop/University/master_thesis/code/rewritten_public/testing/reduced_csvs/"
+    csv_path = "PATH_TO_CSVs/"
     # Output filename prefix (ie. reduced_padding)
     output_filename_prefix = "test_padding"
     # flow timeout value
