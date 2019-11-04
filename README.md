@@ -38,4 +38,4 @@ Output:
 A copy of the dataset is available at www.cis.uniroma1.it/peel-the-onion
 
 ## Acknowledgment
-Dataset and code are part of the work "Peel the onion: Recognition of Android apps behind the Tor Network" [https://arxiv.org/abs/1901.04434]. Please cite it if you use something for your work.
+Dataset and code are part of the work "Peel the onion: Recognition of Android apps behind the Tor Network", 15th International Conference on Information Security Practice and Experience (ISPEC2019). Please cite it if you use something for your work.
