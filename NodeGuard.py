@@ -10,7 +10,7 @@ import pickle
 logging.getLogger("requests").setLevel(logging.ERROR)
 logging.getLogger("urllib3").setLevel(logging.ERROR)
 logging.basicConfig(level=logging.INFO)
-TOR_NODES_LIST_URL = "https://www.dan.me.uk/tornodes"
+TOR_NODES_LIST_URL = "https://web.archive.org/web/20190604163945/https://www.dan.me.uk/tornodes"
 
 
 class NodeGuard:
@@ -20,23 +20,26 @@ class NodeGuard:
 
     def loadNodes(self):
         page = requests.get(TOR_NODES_LIST_URL)
-        tmp_guards = {}
         if page.status_code == requests.codes.ok:
-            logging.info("Grabbed List from %s" % (TOR_NODES_LIST_URL))
+            logging.info("Grabbed List from %s", TOR_NODES_LIST_URL)
             tree = html.fromstring(page.content)
-            page_list = tree.xpath('//div[@class="article box"]/text()')
-            pattern = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
-
-            for line in page_list:
-                server = line.strip().split("|")
-                if pattern.match(server[0]) and "G" in server[4]:
-                    #print("Guard node IP: %s attrs: %s" %(server[0], server[4]))
-                    tmp_guards[server[0]] = server[4]
-            logging.info("Downloaded %d Nodes" % (len(tmp_guards)))
-        if len(tmp_guards) > 0:
-            self.guards = tmp_guards
+            # Extract the part of the page that contains the TOR node list
+            content = page.text.split('__BEGIN_TOR_NODE_LIST__ //-->')[-1].split('<!-- __END_TOR_NODE_LIST__ //-->')[0]
+            lines = content.split('<br/>')
+            pattern = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
+            tmp_guards = {}
+            
+            for line in lines:
+                if pattern.match(line.strip().split('|')[0]):
+                    server = line.strip().split('|')
+                    if "G" in server[4]:  # Check if 'G' for Guard is in the flags section
+                        tmp_guards[server[0]] = server[4]
+                        logging.info("Guard node IP: %s, attrs: %s", server[0], server[4])
+            logging.info("Downloaded %d Nodes", len(tmp_guards))
+            
+            self.guards = tmp_guards if tmp_guards else logging.info("No nodes loaded, list empty.")
         else:
-            logging.info("No nodes loaded, list empty.")
+            logging.error("Failed to retrieve the page.")
 
     def loadNodesFromPickle(self, pickle_file):
         with open(pickle_file + '.pkl', 'rb') as f:

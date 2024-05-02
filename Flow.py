@@ -8,6 +8,7 @@ import pandas
 from itertools import groupby
 from collections import OrderedDict
 from collections import Counter
+import pdb 
 
 class Flow:
     # FlowTimeout: (where do we cut a long TCP stream into smaller chunks, default: 120sec/chunk)
@@ -115,9 +116,10 @@ class Flow:
                     # \___________/
                     #   | | | | |
                     iatList[constants.MIN] = 0
+                iat_float = [float(x) for x in iat] 
                 iatList[constants.MAX] = numpy.max(iat)
-                iatList[constants.STD] = numpy.std(iat)
-                iatList[constants.MEAN] = numpy.mean(iat)
+                iatList[constants.STD] = numpy.std(iat_float)
+                iatList[constants.MEAN] = numpy.mean(iat_float)
 
             if computeActivityTimeout:
                 idle_values = []
@@ -158,15 +160,17 @@ class Flow:
                             active_values.append(i)
 
                 if len(active_values) > 0:
-                    self.ACTIVE[constants.MEAN] = numpy.mean(active_values)
+                    active_values_float = [float(x) for x in active_values] 
+                    self.ACTIVE[constants.MEAN] = numpy.mean(active_values_float)
                     self.ACTIVE[constants.MIN] = numpy.min(active_values)
                     self.ACTIVE[constants.MAX] = numpy.max(active_values)
-                    self.ACTIVE[constants.STD] = numpy.std(active_values)
+                    self.ACTIVE[constants.STD] = numpy.std(active_values_float)
                 if len(idle_values) > 0:
-                    self.IDLE[constants.MEAN] = numpy.mean(idle_values)
+                    idle_values_float = [float(x) for x in idle_values] 
+                    self.IDLE[constants.MEAN] = numpy.mean(idle_values_float)
                     self.IDLE[constants.MIN] = numpy.min(idle_values)
                     self.IDLE[constants.MAX] = numpy.max(idle_values)
-                    self.IDLE[constants.STD] = numpy.std(idle_values)
+                    self.IDLE[constants.STD] = numpy.std(idle_values_float)
 
     def _updateDuration(self):
         if self.TotalPackets > 1:

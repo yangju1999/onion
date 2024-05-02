@@ -13,7 +13,10 @@ if __name__ == '__main__':
     #
     #                | spotify -- |
     #                             |  spotify_1.pcap
-    basepath =  "captures/"
+    
+    basepath =  "connection_padding_pcaps/" 
+    #basepath =  "reduced_connection_padding_pcaps/"
+    
     # output_folder: Self-explicative..
     output_folder = "output/"
     # Each entry is a list [ app, category] where app is also the name of the folder that contains capture
@@ -36,4 +39,4 @@ if __name__ == '__main__':
                         util.ProcessPcapTor(basepath+folder[0]+"/"+file,  output_folder=output_folder, \
                                             label=folder[0], category=folder[1], \
                                             Timeout=timeout, ActivityTimeout=activitytimeout, \
-                                            TorPickle="/Users/emanuele/Desktop/University/master_thesis/code/rewritten_public/testing/testvenv/entry_nodes")
+                                            TorPickle="./entry_nodes")
